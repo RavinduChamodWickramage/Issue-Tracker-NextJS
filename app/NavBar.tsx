@@ -15,29 +15,31 @@ const NavBar = () => {
 
   return (
     <nav className="flex space-x-6 border-b mb-5 px-5 h-14 items-center">
-      <Link href="/">
+      <Link href="/" className="text-2xl text-green-700">
         <FaBug />
       </Link>
       <ul className="flex space-x-6">
         {links.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={
-              link.href === currentPath
-                ? "text-green-700 hover:text-green-900 group relative transition-colors duration-300"
-                : "text-zinc-500 hover:text-zinc-900 group relative transition-colors duration-300"
-            }
-          >
-            {link.label}
-            <span
-              className={`absolute left-0 bottom-0 h-0.5 transition-all duration-300 ${
-                link.href === currentPath
-                  ? "w-full bg-green-700"
-                  : "w-0 group-hover:w-full bg-zinc-900"
-              }`}
-            ></span>
-          </Link>
+          <li key={link.href} className="relative group">
+            <Link href={link.href} className="relative">
+              <span
+                className={`transition-colors duration-300 ${
+                  link.href === currentPath
+                    ? "text-green-700 hover:text-green-900"
+                    : "text-zinc-500 hover:text-zinc-900"
+                }`}
+              >
+                {link.label}
+              </span>
+              <span
+                className={`absolute left-0 bottom-0 h-0.5 transition-all duration-300 ${
+                  link.href === currentPath
+                    ? "w-full bg-green-700"
+                    : "w-0 bg-zinc-900 group-hover:w-full"
+                }`}
+              ></span>
+            </Link>
+          </li>
         ))}
       </ul>
     </nav>
