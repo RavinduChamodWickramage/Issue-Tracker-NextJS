@@ -9,6 +9,7 @@ import { Theme } from "@radix-ui/themes";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
