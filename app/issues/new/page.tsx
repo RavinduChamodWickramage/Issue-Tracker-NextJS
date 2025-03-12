@@ -5,9 +5,12 @@ import React, { useState } from "react";
 // import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { useForm, Controller } from "react-hook-form";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { CiCircleInfo } from "react-icons/ci";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createIssueSchema } from "@/app/createIssueSchema";
+import { z } from "zod";
 
 // Dynamically import SimpleMDE with SSR disabled
 import dynamic from "next/dynamic";
@@ -15,67 +18,34 @@ const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
 
-interface IssueForm {
-  title: string;
-  description: string;
-}
-
-interface ErrorResponse {
-  errors?: {
-    title?: { _errors: string[] };
-    description?: { _errors: string[] };
-  };
-  error?: string;
-}
+type IssueForm = z.infer<typeof createIssueSchema>;
 
 const IssueFormPage = () => {
   const router = useRouter();
-  const { register, control, handleSubmit } = useForm<IssueForm>();
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<IssueForm>({
+    resolver: zodResolver(createIssueSchema),
+  });
   const [error, setError] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<{
-    title?: string;
-    description?: string;
-  }>({});
 
   const onSubmit = async (data: IssueForm) => {
     try {
       setError("");
-      setFieldErrors({});
+
       await axios.post(`/api/issues`, data);
       router.push(`/issues`);
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-
-      if (error.response) {
-        if (error.response.status === 400 && error.response.data.errors) {
-          const responseErrors = error.response.data.errors;
-          const newFieldErrors: { title?: string; description?: string } = {};
-
-          if (responseErrors.title?._errors?.length) {
-            newFieldErrors.title = responseErrors.title._errors[0];
-          }
-
-          if (responseErrors.description?._errors?.length) {
-            newFieldErrors.description = responseErrors.description._errors[0];
-          }
-
-          setFieldErrors(newFieldErrors);
-          setError("Please fix the validation errors below.");
-        } else if (error.response.status === 500 && error.response.data.error) {
-          setError(error.response.data.error);
-        } else {
-          setError(`An error occurred: ${error.response.statusText}`);
-        }
-      } else if (error.request) {
-        setError("Network error. Please check your connection and try again.");
-      } else {
-        setError("An unexpected error occurred. Please try again later.");
-      }
+      console.error("Error submitting form:", err);
+      setError("An unexpected error occurred. Please try again.");
     }
   };
 
   return (
-    <div className="max-w-xl ">
+    <div className="max-w-xl">
       {error && (
         <Callout.Root color="red" className="mb-5">
           <Callout.Icon>
@@ -85,12 +55,20 @@ const IssueFormPage = () => {
         </Callout.Root>
       )}
 
-      <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="space-y-3"
+        onSubmit={handleSubmit(onSubmit, (errors) => {
+          if (errors.title && errors.description) {
+            setError("Title & Description are required.");
+          } else if (errors.title) {
+            setError("Title is required.");
+          } else if (errors.description) {
+            setError("Description is required.");
+          }
+        })}
+      >
         <div>
           <TextField.Root placeholder="Enter Title" {...register("title")} />
-          {fieldErrors.title && (
-            <p className="text-red-500 text-sm mt-1">{fieldErrors.title}</p>
-          )}
         </div>
 
         <div>
@@ -101,14 +79,11 @@ const IssueFormPage = () => {
               <SimpleMDE placeholder="Description" {...field} />
             )}
           />
-          {fieldErrors.description && (
-            <p className="text-red-500 text-sm mt-1">
-              {fieldErrors.description}
-            </p>
-          )}
         </div>
 
-        <Button>Submit New Issue</Button>
+        <Button disabled={isSubmitting}>
+          {isSubmitting ? "Submitting..." : "Submit New Issue"}
+        </Button>
       </form>
     </div>
   );

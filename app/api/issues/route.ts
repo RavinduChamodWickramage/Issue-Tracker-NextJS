@@ -1,11 +1,6 @@
 import { prisma } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-
-const createIssueSchema = z.object({
-  title: z.string().min(1, "Title is required.").max(255),
-  description: z.string().min(1, "Description is required."),
-});
+import { createIssueSchema } from "../../createIssueSchema";
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,7 +21,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating issue:", error);
     return NextResponse.json(
-      { error: "An error occurred while creating the issue." },
+      { error: "An unexpected error occurred while creating the issue." },
       { status: 500 }
     );
   }
