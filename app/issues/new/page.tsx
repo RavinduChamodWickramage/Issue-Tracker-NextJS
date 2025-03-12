@@ -15,6 +15,7 @@ import { z } from "zod";
 // Dynamically import SimpleMDE with SSR disabled
 import dynamic from "next/dynamic";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/Spinner";
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
@@ -31,6 +32,7 @@ const IssueFormPage = () => {
   } = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema),
   });
+
   const [error, setError] = useState("");
 
   const onSubmit = async (data: IssueForm) => {
@@ -89,7 +91,13 @@ const IssueFormPage = () => {
         </div>
 
         <Button disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : "Submit New Issue"}
+          {isSubmitting ? (
+            <>
+              <Spinner /> Submitting...
+            </>
+          ) : (
+            "Submit New Issue"
+          )}
         </Button>
       </form>
     </div>
