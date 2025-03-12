@@ -14,6 +14,7 @@ import { z } from "zod";
 
 // Dynamically import SimpleMDE with SSR disabled
 import dynamic from "next/dynamic";
+import ErrorMessage from "@/app/components/ErrorMessage";
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
@@ -69,6 +70,9 @@ const IssueFormPage = () => {
       >
         <div>
           <TextField.Root placeholder="Enter Title" {...register("title")} />
+          <ErrorMessage>
+            {error.includes("Title") ? "Title is required." : ""}
+          </ErrorMessage>
         </div>
 
         <div>
@@ -79,6 +83,9 @@ const IssueFormPage = () => {
               <SimpleMDE placeholder="Description" {...field} />
             )}
           />
+          <ErrorMessage>
+            {error.includes("Description") ? "Description is required." : ""}
+          </ErrorMessage>
         </div>
 
         <Button disabled={isSubmitting}>
