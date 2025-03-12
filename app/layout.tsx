@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans`}>
         <Theme appearance="light" accentColor="violet">
           <NavBar />
-          <main className="p-5">{children}</main>
+          <main className="p-5 pt-20">{children}</main>
         </Theme>
       </body>
     </html>
