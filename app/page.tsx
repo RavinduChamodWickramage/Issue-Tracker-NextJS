@@ -15,7 +15,7 @@ export default function Home() {
       </div>
 
       <Link href="/issues">
-        <button className="mt-8 px-8 py-3 bg-blue-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105">
+        <button className="mt-8 px-8 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 ease-in-out transform hover:scale-105">
           View Issues
         </button>
       </Link>
@@ -24,7 +24,7 @@ export default function Home() {
         <div className="text-center space-y-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-16 h-16 mx-auto text-blue-600"
+            className="w-16 h-16 mx-auto text-green-600"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -48,7 +48,7 @@ export default function Home() {
         <div className="text-center space-y-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-16 h-16 mx-auto text-blue-600"
+            className="w-16 h-16 mx-auto text-green-600"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -70,7 +70,7 @@ export default function Home() {
         <div className="text-center space-y-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-16 h-16 mx-auto text-blue-600"
+            className="w-16 h-16 mx-auto text-green-600"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
