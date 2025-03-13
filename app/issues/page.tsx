@@ -15,10 +15,10 @@ interface Issue {
   updatedAt: string;
 }
 
-const statusBadgeMap: Record<Status, { label: string; color: string }> = {
-  OPEN: { label: "Open", color: "red" },
-  IN_PROGRESS: { label: "In Progress", color: "amber" },
-  CLOSED: { label: "Closed", color: "green" },
+const statusBadgeMap: Record<Status, { label: string; bgColor: string }> = {
+  OPEN: { label: "Open", bgColor: "bg-red-500" },
+  IN_PROGRESS: { label: "In Progress", bgColor: "bg-amber-500" },
+  CLOSED: { label: "Closed", bgColor: "bg-green-500" },
 };
 
 const IssuesPage = () => {
@@ -105,12 +105,13 @@ const IssuesPage = () => {
                         : issue.description}
                     </div>
                     <span
-                      className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium text-${
-                        statusBadgeMap[issue.status].color
-                      }-700 bg-${statusBadgeMap[issue.status].color}-100`}
+                      className={`inline-block px-2 py-1 rounded text-white font-bold ${
+                        statusBadgeMap[issue.status].bgColor
+                      }`}
                     >
                       {statusBadgeMap[issue.status].label}
                     </span>
+
                     <span className="ml-2">
                       {new Date(issue.createdAt).toLocaleDateString()}
                     </span>
@@ -122,17 +123,17 @@ const IssuesPage = () => {
                 <Table.Cell className="hidden md:table-cell">
                   <span
                     className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium text-${
-                      statusBadgeMap[issue.status].color
-                    }-700 bg-${statusBadgeMap[issue.status].color}-100`}
+                      statusBadgeMap[issue.status].bgColor
+                    }-700 bg-${statusBadgeMap[issue.status].bgColor}-100`}
                   >
                     {issue.description}
                   </span>
                 </Table.Cell>
                 <Table.Cell className="hidden md:table-cell">
                   <span
-                    className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium text-${
-                      statusBadgeMap[issue.status].color
-                    }-700 bg-${statusBadgeMap[issue.status].color}-100`}
+                    className={`inline-block px-2 py-1 rounded text-white font-bold ${
+                      statusBadgeMap[issue.status].bgColor
+                    }`}
                   >
                     {statusBadgeMap[issue.status].label}
                   </span>

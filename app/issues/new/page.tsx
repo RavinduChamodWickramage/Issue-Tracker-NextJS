@@ -9,7 +9,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { CiCircleInfo } from "react-icons/ci";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createIssueSchema } from "@/app/createIssueSchema";
+import { createIssueSchema } from "@/app/schemas/createIssueSchema";
 import { z } from "zod";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
