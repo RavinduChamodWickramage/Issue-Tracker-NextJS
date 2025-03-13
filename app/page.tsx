@@ -3,7 +3,6 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center px-4 py-10">
-      {/* Hero Section */}
       <div className="text-center max-w-2xl space-y-6">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-800">
           Track Your Issues with Ease
