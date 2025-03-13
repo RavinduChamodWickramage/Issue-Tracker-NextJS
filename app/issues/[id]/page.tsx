@@ -37,6 +37,23 @@ interface Issue {
   updatedAt: string;
 }
 
+const statusBadgeMap: Record<
+  string,
+  { label: string; bgColor: string; textColor: string }
+> = {
+  OPEN: { label: "Open", bgColor: "!bg-red-200", textColor: "!text-red-800" },
+  IN_PROGRESS: {
+    label: "In Progress",
+    bgColor: "!bg-amber-200",
+    textColor: "!text-amber-800",
+  },
+  CLOSED: {
+    label: "Closed",
+    bgColor: "!bg-green-200",
+    textColor: "!text-green-800",
+  },
+};
+
 const IssueDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
   // Unwrap the params Promise using React.use()
   const resolvedParams = React.use(params);
@@ -120,96 +137,147 @@ const IssueDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
   }
 
   return (
-    <div className="max-w-xl">
-      <div className="mb-5 flex justify-between items-center">
-        <Heading>Update Issue</Heading>
-        <div className="text-sm text-gray-500">
-          <div>Created: {new Date(issue.createdAt).toLocaleString()}</div>
-          <div>Last Updated: {new Date(issue.updatedAt).toLocaleString()}</div>
+    <section className="bg-gray-50 px-6 py-8">
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
+        <div className="max-w-xl">
+          <div className="mb-6 flex justify-between items-center">
+            <Heading className="text-green-700">Update Issue</Heading>
+
+            <div className="grid grid-cols-2 gap-1 text-sm font-small pl-10">
+              <span className="text-gray-600">Created:</span>
+              <span className="text-right">
+                {new Date(issue.createdAt).toLocaleString()}
+              </span>
+              <span className="text-gray-600">Last Updated:</span>
+              <span className="text-right">
+                {new Date(issue.updatedAt).toLocaleString()}
+              </span>
+            </div>
+          </div>
+
+          {error && (
+            <Callout.Root color="red" className="mb-5">
+              <Callout.Icon>
+                <CiCircleInfo />
+              </Callout.Icon>
+              <Callout.Text>{error}</Callout.Text>
+            </Callout.Root>
+          )}
+
+          {updateSuccess && (
+            <Callout.Root color="green" className="mb-5">
+              <Callout.Text>Issue updated successfully!</Callout.Text>
+            </Callout.Root>
+          )}
+
+          <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <TextField.Root
+                placeholder="Enter Title"
+                {...register("title")}
+              />
+              {errors.title && (
+                <ErrorMessage>{errors.title.message}</ErrorMessage>
+              )}
+            </div>
+
+            <div>
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => (
+                  <SimpleMDE placeholder="Description" {...field} />
+                )}
+              />
+              {errors.description && (
+                <ErrorMessage>{errors.description.message}</ErrorMessage>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Status
+              </label>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Select.Root
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <Select.Trigger
+                      className={`w-full py-2 px-4 rounded !font-semibold ${
+                        statusBadgeMap[
+                          field.value as keyof typeof statusBadgeMap
+                        ]?.bgColor || "bg-gray-500"
+                      } ${
+                        statusBadgeMap[
+                          field.value as keyof typeof statusBadgeMap
+                        ]?.textColor || "text-gray-800"
+                      }`}
+                    >
+                      {statusBadgeMap[
+                        field.value as keyof typeof statusBadgeMap
+                      ]?.label || "Select Status"}
+                    </Select.Trigger>
+
+                    <Select.Content>
+                      <Select.Item
+                        className="hover:!bg-red-800 hover:!text-red-200 bg-red-200 text-red-800 m-1 font-semibold"
+                        value="OPEN"
+                      >
+                        Open
+                      </Select.Item>
+                      <Select.Item
+                        className="hover:!bg-amber-800 hover:!text-amber-200 bg-amber-200 text-amber-800 m-1 font-semibold"
+                        value="IN_PROGRESS"
+                      >
+                        In Progress
+                      </Select.Item>
+                      <Select.Item
+                        className="hover:!bg-green-800 hover:!text-green-200bg-green-200 text-green-800 m-1 font-semibold"
+                        value="CLOSED"
+                      >
+                        Closed
+                      </Select.Item>
+                    </Select.Content>
+                  </Select.Root>
+                )}
+              />
+
+              {errors.status && (
+                <ErrorMessage>{errors.status.message}</ErrorMessage>
+              )}
+            </div>
+
+            <div className="flex gap-3 justify-end">
+              <Button
+                className="hover:!bg-sky-500 hover:!text-sky-100 !bg-sky-200 !text-sky-600 group flex items-center rounded-md text-sm font-medium px-4 py-2"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Spinner /> Updating...
+                  </>
+                ) : (
+                  "Update Issue"
+                )}
+              </Button>
+              <Button
+                className="hover:!bg-red-500 hover:!text-red-100 !bg-red-200 !text-red-600 group flex items-center rounded-md text-sm font-medium px-4 py-2"
+                type="button"
+                variant="soft"
+                color="gray"
+                onClick={() => router.push("/issues")}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
         </div>
       </div>
-
-      {error && (
-        <Callout.Root color="red" className="mb-5">
-          <Callout.Icon>
-            <CiCircleInfo />
-          </Callout.Icon>
-          <Callout.Text>{error}</Callout.Text>
-        </Callout.Root>
-      )}
-
-      {updateSuccess && (
-        <Callout.Root color="green" className="mb-5">
-          <Callout.Text>Issue updated successfully!</Callout.Text>
-        </Callout.Root>
-      )}
-
-      <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <TextField.Root placeholder="Enter Title" {...register("title")} />
-          {errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
-        </div>
-
-        <div>
-          <Controller
-            name="description"
-            control={control}
-            render={({ field }) => (
-              <SimpleMDE placeholder="Description" {...field} />
-            )}
-          />
-          {errors.description && (
-            <ErrorMessage>{errors.description.message}</ErrorMessage>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Status
-          </label>
-          <Controller
-            name="status"
-            control={control}
-            render={({ field }) => (
-              <Select.Root
-                defaultValue={field.value}
-                onValueChange={field.onChange}
-              >
-                <Select.Trigger />
-                <Select.Content>
-                  <Select.Item value="OPEN">Open</Select.Item>
-                  <Select.Item value="IN_PROGRESS">In Progress</Select.Item>
-                  <Select.Item value="CLOSED">Closed</Select.Item>
-                </Select.Content>
-              </Select.Root>
-            )}
-          />
-          {errors.status && (
-            <ErrorMessage>{errors.status.message}</ErrorMessage>
-          )}
-        </div>
-
-        <div className="flex gap-3">
-          <Button disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Spinner /> Updating...
-              </>
-            ) : (
-              "Update Issue"
-            )}
-          </Button>
-          <Button
-            type="button"
-            variant="soft"
-            color="gray"
-            onClick={() => router.push("/issues")}
-          >
-            Cancel
-          </Button>
-        </div>
-      </form>
-    </div>
+    </section>
   );
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { TextField, Button, Callout } from "@radix-ui/themes";
+import { TextField, Button, Callout, Heading } from "@radix-ui/themes";
 import React, { useState } from "react";
 // import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
@@ -57,51 +57,66 @@ const IssueFormPage = () => {
   };
 
   return (
-    <div className="max-w-xl">
-      {error && (
-        <Callout.Root color="red" className="mb-5">
-          <Callout.Icon>
-            <CiCircleInfo />
-          </Callout.Icon>
-          <Callout.Text>{error}</Callout.Text>
-        </Callout.Root>
-      )}
-
-      <form
-        className="space-y-3"
-        onSubmit={handleSubmit(onSubmit, handleFormErrors)}
-      >
-        <div>
-          <TextField.Root placeholder="Enter Title" {...register("title")} />
-          <ErrorMessage>
-            {error.includes("Title") ? "Title is required." : ""}
-          </ErrorMessage>
-        </div>
-
-        <div>
-          <Controller
-            name="description"
-            control={control}
-            render={({ field }) => (
-              <SimpleMDE placeholder="Description" {...field} />
-            )}
-          />
-          <ErrorMessage>
-            {error.includes("Description") ? "Description is required." : ""}
-          </ErrorMessage>
-        </div>
-
-        <Button disabled={isSubmitting}>
-          {isSubmitting ? (
-            <>
-              <Spinner /> Submitting...
-            </>
-          ) : (
-            "Submit New Issue"
+    <section className="bg-gray-50 px-6 py-8">
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
+        <div className="max-w-xl">
+          <Heading className="text-green-700 pb-5">Submit Issue</Heading>
+          {error && (
+            <Callout.Root color="red" className="mb-5">
+              <Callout.Icon>
+                <CiCircleInfo />
+              </Callout.Icon>
+              <Callout.Text>{error}</Callout.Text>
+            </Callout.Root>
           )}
-        </Button>
-      </form>
-    </div>
+
+          <form
+            className="space-y-3"
+            onSubmit={handleSubmit(onSubmit, handleFormErrors)}
+          >
+            <div>
+              <TextField.Root
+                placeholder="Enter Title"
+                {...register("title")}
+              />
+              <ErrorMessage>
+                {error.includes("Title") ? "Title is required." : ""}
+              </ErrorMessage>
+            </div>
+
+            <div>
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => (
+                  <SimpleMDE placeholder="Description" {...field} />
+                )}
+              />
+              <ErrorMessage>
+                {error.includes("Description")
+                  ? "Description is required."
+                  : ""}
+              </ErrorMessage>
+            </div>
+
+            <div className="flex justify-end">
+              <Button
+                className="hover:!bg-sky-200 hover:!text-sky-600 !bg-sky-500 !text-sky-100 group flex items-center rounded-md text-sm font-medium px-4 py-2"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Spinner /> Submitting...
+                  </>
+                ) : (
+                  "Submit New Issue"
+                )}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
   );
 };
 

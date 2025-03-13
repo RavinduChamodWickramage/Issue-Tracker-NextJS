@@ -59,10 +59,27 @@ const IssuesPage = () => {
   return (
     <div className="space-y-5">
       <div className="flex justify-between items-center">
-        <Heading>Issues</Heading>
-        <Button>
-          <Link href="/issues/new">New Issue</Link>
-        </Button>
+        <Heading className="text-green-700">Issues</Heading>
+        <Link href="/issues/new">
+          <Button
+            data-accent-color="none"
+            className="hover:!bg-sky-100 hover:!text-sky-600 !bg-sky-500 !text-sky-100 group flex items-center rounded-md text-sm font-medium px-4 py-2"
+          >
+            <svg
+              className="group-hover:!text-sky-600 !text-sky-100 mr-2"
+              width="12"
+              height="20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M6 5a1 1 0 011 1v3h3a1 1 0 110 2H7v3a1 1 0 11-2 0v-3H2a1 1 0 110-2h3V6a1 1 0 011-1z"
+              />
+            </svg>
+            New Issue
+          </Button>
+        </Link>
       </div>
 
       {issues.length === 0 ? (
@@ -73,17 +90,19 @@ const IssuesPage = () => {
         <Table.Root variant="surface">
           <Table.Header>
             <Table.Row>
-              <Table.ColumnHeaderCell>Issue</Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell className="hidden md:table-cell">
+              <Table.ColumnHeaderCell className="text-green-900">
+                Issue
+              </Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell className="hidden md:table-cell text-green-900">
                 Description
               </Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell className="hidden md:table-cell">
+              <Table.ColumnHeaderCell className="hidden md:table-cell text-green-900">
                 Status
               </Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell className="hidden md:table-cell">
+              <Table.ColumnHeaderCell className="hidden md:table-cell text-green-900">
                 Created
               </Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell className="hidden md:table-cell">
+              <Table.ColumnHeaderCell className="hidden md:table-cell text-green-900">
                 Updated
               </Table.ColumnHeaderCell>
             </Table.Row>
