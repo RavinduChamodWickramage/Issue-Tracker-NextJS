@@ -1,12 +1,20 @@
-import { prisma } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { updateIssueSchema } from "../../../schemas/updateIssueSchema";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/lib/auth";
+import { prisma } from "@/prisma/client";
+import { updateIssueSchema } from "@/app/schemas/updateIssueSchema";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const id = parseInt(params.id);
 
     if (isNaN(id)) {
@@ -14,7 +22,7 @@ export async function GET(
     }
 
     const issue = await prisma.issues.findUnique({
-      where: { id },
+      where: { id, userId: session.user.id },
     });
 
     if (!issue) {
@@ -36,6 +44,12 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const id = parseInt(params.id);
 
     if (isNaN(id)) {
@@ -52,10 +66,8 @@ export async function PATCH(
       );
     }
 
-    const { title, description, status } = validation.data;
-
     const issue = await prisma.issues.findUnique({
-      where: { id },
+      where: { id, userId: session.user.id },
     });
 
     if (!issue) {
@@ -63,11 +75,11 @@ export async function PATCH(
     }
 
     const updatedIssue = await prisma.issues.update({
-      where: { id },
+      where: { id, userId: session.user.id },
       data: {
-        ...(title && { title }),
-        ...(description && { description }),
-        ...(status && { status }),
+        ...(body.title && { title: body.title }),
+        ...(body.description && { description: body.description }),
+        ...(body.status && { status: body.status }),
       },
     });
 
@@ -86,6 +98,12 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const id = parseInt(params.id);
 
     if (isNaN(id)) {
@@ -93,7 +111,7 @@ export async function DELETE(
     }
 
     const issue = await prisma.issues.findUnique({
-      where: { id },
+      where: { id, userId: session.user.id },
     });
 
     if (!issue) {
@@ -101,7 +119,7 @@ export async function DELETE(
     }
 
     await prisma.issues.delete({
-      where: { id },
+      where: { id, userId: session.user.id },
     });
 
     return NextResponse.json({ success: true }, { status: 200 });

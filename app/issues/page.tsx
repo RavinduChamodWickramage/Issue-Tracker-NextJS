@@ -13,6 +13,7 @@ import { Label } from "@radix-ui/themes/components/context-menu";
 import axios, { AxiosError } from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface Issue {
   id: number;
@@ -41,6 +42,7 @@ const statusBadgeMap: Record<
 };
 
 const IssuesPage = () => {
+  const { data: session } = useSession();
   const [issues, setIssues] = useState<Issue[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -74,8 +76,10 @@ const IssuesPage = () => {
       }
     };
 
-    fetchIssues();
-  }, []);
+    if (session) {
+      fetchIssues();
+    }
+  }, [session]);
 
   useEffect(() => {
     const filtered = issues.filter((issue) => {
@@ -104,7 +108,7 @@ const IssuesPage = () => {
     });
 
     setFilteredIssues(filtered);
-  }, [searchQuery, statusFilter, createdDateFilter, updatedDateFilter]);
+  }, [searchQuery, statusFilter, createdDateFilter, updatedDateFilter, issues]);
 
   const clearFilters = () => {
     setSearchQuery("");
