@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { FaBug } from "react-icons/fa";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoMdClose } from "react-icons/io";
+import AuthStatus from "./components/AuthStatus";
 
 const NavBar = () => {
   const currentPath = usePathname();
@@ -97,6 +98,7 @@ const NavBar = () => {
           ))}
         </ul>
       </div>
+      <AuthStatus />
     </nav>
   );
 };

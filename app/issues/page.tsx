@@ -10,7 +10,7 @@ import {
   TextField,
 } from "@radix-ui/themes";
 import { Label } from "@radix-ui/themes/components/context-menu";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -58,10 +58,16 @@ const IssuesPage = () => {
         setIssues(response.data);
         setFilteredIssues(response.data);
       } catch (err) {
-        setError(
-          err.response?.data?.message ||
-            "An error occurred while fetching issues."
-        );
+        if (err instanceof AxiosError) {
+          setError(
+            err.response?.data?.message ||
+              "An error occurred while fetching issues."
+          );
+        } else if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unexpected error occurred.");
+        }
         console.error("Error fetching issues:", err);
       } finally {
         setIsLoading(false);

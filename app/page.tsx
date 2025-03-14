@@ -1,6 +1,20 @@
-import Link from "next/link";
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleViewIssues = () => {
+    if (!session) {
+      router.push("/login");
+    } else {
+      router.push("/issues");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center px-4 py-10">
       <div className="text-center max-w-2xl space-y-6">
@@ -14,11 +28,12 @@ export default function Home() {
         </p>
       </div>
 
-      <Link href="/issues">
-        <button className="mt-8 px-8 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 ease-in-out transform hover:scale-105">
-          View Issues
-        </button>
-      </Link>
+      <button
+        onClick={handleViewIssues}
+        className="mt-8 px-8 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 ease-in-out transform hover:scale-105"
+      >
+        {session ? "View Issues" : "Login to View Issues"}
+      </button>
 
       <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
         <div className="text-center space-y-4">
