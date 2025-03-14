@@ -57,7 +57,7 @@ export default function LoginPage() {
             : "Login failed. Please check your connection and try again."
         );
       } else {
-        router.push("/dashboard");
+        router.push("/issues");
       }
     } catch (error) {
       console.error("Login error:", error);
